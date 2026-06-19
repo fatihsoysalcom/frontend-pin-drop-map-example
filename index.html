@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Freedom Map Example</title>
+    <!-- Leaflet CSS for map styling -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzJjQFLM2XrMDimMjLPnPxgE="
+          crossorigin=""/>
+    <style>
+        /* Basic styling for the map container */
+        #map {
+            height: 100vh; /* Make the map fill the viewport height */
+            width: 100%;
+        }
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- The div where the map will be rendered -->
+    <div id="map"></div>
+
+    <!-- Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/4K9+fdkyJWC0PQLHgKg="
+            crossorigin=""></script>
+    <script>
+        // Initialize the map and set its initial view
+        // The first argument is the ID of the div element where the map will be rendered.
+        // The second argument is an options object.
+        const map = L.map('map').setView([39.9334, 32.8597], 6); // Centered around Turkey, zoom level 6
+
+        // Add a tile layer to the map (OpenStreetMap tiles)
+        // This is the visual base layer of the map.
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // --- Core concept: Backend-less location data stored directly in frontend ---
+        // This array represents our "pin-drop" locations.
+        // In a real application, this data could be loaded from a static JSON file
+        // or embedded directly as shown here, avoiding a dynamic backend server.
+        const locations = [
+            { lat: 41.0082, lng: 28.9784, title: 'Istanbul Food Market', description: 'Fresh produce and local delicacies.' },
+            { lat: 38.4237, lng: 27.1428, title: 'Izmir Organic Farm', description: 'Farm-to-table experience.' },
+            { lat: 36.8969, lng: 30.7133, title: 'Antalya Spice Bazaar', description: 'Exotic spices and traditional goods.' },
+            { lat: 39.9334, lng: 32.8597, title: 'Ankara Local Bakery', description: 'Artisan bread and pastries.' },
+            { lat: 37.0000, lng: 35.3213, title: 'Adana Kebab House', description: 'Famous Adana kebab.' }
+        ];
+
+        // Loop through the locations and add a marker for each
+        locations.forEach(location => {
+            // Create a marker at the specified latitude and longitude
+            const marker = L.marker([location.lat, location.lng]).addTo(map);
+
+            // Bind a popup to the marker that displays the title and description
+            marker.bindPopup(`<b>${location.title}</b><br>${location.description}`).openPopup();
+        });
+
+        // Optional: Fit the map bounds to show all markers
+        // This adjusts the zoom and center to ensure all markers are visible.
+        const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+        map.fitBounds(group.getBounds());
+
+    </script>
+</body>
+</html>
